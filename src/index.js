@@ -8,7 +8,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import reducer from "./reducer";
+import reducer from "./_reducer";
 
 const composeEnhancers = composeWithDevTools({});
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
