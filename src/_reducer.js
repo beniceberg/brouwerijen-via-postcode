@@ -1,7 +1,8 @@
-import { SET_BREWERIES, SET_LAT_LONG } from "./_actions";
+import { SET_BREWERIES, SET_LAT_LONG, SET_OPEN_BREWERIES } from "./_actions";
 
 const initialState = {
-  breweries: []
+  breweries: [],
+  openBreweries: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -10,6 +11,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         breweries: action.list
+      };
+    case SET_OPEN_BREWERIES:
+      return {
+        ...state,
+        openBreweries: action.list.sort(
+          (a, b) => a.distance.value - b.distance.value
+        )
       };
     case SET_LAT_LONG:
       return {

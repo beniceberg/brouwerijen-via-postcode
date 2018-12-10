@@ -22,5 +22,6 @@ const MapContainer = ({ google, breweries }) => (
 );
 
 export default GoogleApiWrapper({
-  apiKey: googleMapsKey
+  apiKey: googleMapsKey,
+  libraries: ["geometry"]
 })(MapContainer);

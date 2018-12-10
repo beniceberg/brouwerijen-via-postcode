@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import MapContainer from "./components/MapContainer";
+import Input from "./components/Input";
 import "./App.css";
 
-import { fetchBreweries, getLatAndLongs } from "./_actions";
+import { fetchBreweries, getLatAndLongs, getDistances } from "./_actions";
 import { getBreweries } from "./_selectors";
 
 class App extends Component {
@@ -25,11 +26,19 @@ class App extends Component {
     this.props.dispatch(fetchBreweries());
   }
 
+  doOnSeach = (postalCode, google) => {
+    this.props.dispatch(getDistances(postalCode, google));
+  };
+
   render() {
+    const { breweries } = this.props;
     return (
       <div className="App">
         <section>
-          <MapContainer breweries={this.props.breweries} />
+          <Input doOnSeach={this.doOnSeach} breweries={breweries} />
+        </section>
+        <section>
+          <MapContainer breweries={breweries} />
         </section>
       </div>
     );
