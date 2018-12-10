@@ -6,6 +6,8 @@ const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 export const SET_BREWERIES = "SET_BREWERIES";
 export const SET_LAT_LONG = "SET_LAT_LONG";
 export const SET_OPEN_BREWERIES = "SET_OPEN_BREWERIES";
+export const SET_CURRENT = "SET_CURRENT";
+export const SET_DIRECTIONS = "SET_DIRECTIONS";
 
 const setBreweries = list => ({
   type: SET_BREWERIES,
@@ -19,6 +21,14 @@ const setLatLongList = list => ({
 const setOpenBreweries = list => ({
   type: SET_OPEN_BREWERIES,
   list
+});
+const setCurrent = location => ({
+  type: SET_CURRENT,
+  location
+});
+const setDirections = directions => ({
+  type: SET_DIRECTIONS,
+  directions
 });
 
 // fetching breweries from given api
@@ -59,6 +69,13 @@ export const getLatAndLongs = () => (dispatch, getState) => {
   Promise.all(latLong).then(list => dispatch(setLatLongList(list)));
 };
 
+export const getLatLongInput = postalCode => (dispatch, getState) => {
+  const currentLocation = fetchBreweryLatLong(postalCode);
+  currentLocation.then(location =>
+    dispatch(setCurrent({ zipcode: postalCode, latLong: location }))
+  );
+};
+
 export const getDistances = (postalCode, google) => (dispatch, getState) => {
   // credits: https://stackoverflow.com/a/32261167/9094722
   const breweries = getBreweries(getState());
@@ -66,7 +83,7 @@ export const getDistances = (postalCode, google) => (dispatch, getState) => {
   const serviceOptions = {
     origins: [postalCode],
     destinations: [],
-    travelMode: "DRIVING"
+    travelMode: google.maps.TravelMode.DRIVING
   };
 
   const distanceArray = breweries.reduce((acc, el) => {
@@ -88,7 +105,40 @@ export const getDistances = (postalCode, google) => (dispatch, getState) => {
           distanceArray[index].distance = el.distance;
         }
       });
+      dispatch(setOpenBreweries(distanceArray));
+      dispatch(getLatLongInput(postalCode));
+    } else {
+      alert("Invalid zip code");
     }
-    dispatch(setOpenBreweries(distanceArray));
+  });
+};
+
+export const calcRoute = (startPos, endPos, google) => (dispatch, getState) => {
+  const directionsService = new google.maps.DirectionsService();
+  const start = new google.maps.LatLng(
+    startPos.latLong.lat,
+    startPos.latLong.lng
+  );
+  const end = new google.maps.LatLng(endPos.latLong.lat, endPos.latLong.lng);
+  const request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, (response, status) => {
+    if (status == google.maps.DirectionsStatus.OK) {
+      // directionsDisplay.setDirections(response);
+      // directionsDisplay.setMap(map);
+      dispatch(setDirections(response));
+    } else {
+      alert(
+        "Directions Request from " +
+          start.toUrlValue(6) +
+          " to " +
+          end.toUrlValue(6) +
+          " failed: " +
+          status
+      );
+    }
   });
 };

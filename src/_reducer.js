@@ -1,8 +1,16 @@
-import { SET_BREWERIES, SET_LAT_LONG, SET_OPEN_BREWERIES } from "./_actions";
+import {
+  SET_BREWERIES,
+  SET_LAT_LONG,
+  SET_OPEN_BREWERIES,
+  SET_CURRENT,
+  SET_DIRECTIONS
+} from "./_actions";
 
 const initialState = {
   breweries: [],
-  openBreweries: []
+  openBreweries: [],
+  currentLocation: {},
+  directions: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,6 +33,16 @@ const reducer = (state = initialState, action) => {
         breweries: state.breweries.map((brewery, index) =>
           Object.assign({}, brewery, { latLong: action.list[index] })
         )
+      };
+    case SET_CURRENT:
+      return {
+        ...state,
+        currentLocation: action.location
+      };
+    case SET_DIRECTIONS:
+      return {
+        ...state,
+        directions: action.directions
       };
     default:
       return state;
