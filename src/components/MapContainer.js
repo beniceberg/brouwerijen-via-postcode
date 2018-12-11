@@ -3,28 +3,42 @@ import { Map, Marker, GoogleApiWrapper } from "google-maps-react";
 
 const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 
-const MapContainer = ({ google, breweries, currentLocation }) => (
+const MapContainer = ({
+  google,
+  breweries,
+  currentLocation,
+  closestBrewery
+}) => (
   <Map
     google={google}
     // central Asmterdam
     initialCenter={currentLocation.latLong || { lat: 52.368, lng: 4.9036 }}
-    zoom={8}
+    zoom={10}
     gestureHandling="cooperative"
     className="mapContainer"
     center={currentLocation.latLong || { lat: 52.368, lng: 4.9036 }}
   >
-    {breweries.map(
-      ({ latLong }) =>
-        latLong && (
-          <Marker position={latLong} key={`${latLong.lat}+${latLong.lng}`} />
+    {currentLocation.latLong
+      ? // show current location and closest brewery
+        [currentLocation, closestBrewery].map(
+          ({ latLong }) =>
+            latLong && (
+              <Marker
+                position={latLong}
+                key={`${latLong.lat}+${latLong.lng}`}
+              />
+            )
         )
-    )}
-    {currentLocation.latLong && (
-      <Marker
-        position={currentLocation.latLong}
-        key={`${currentLocation.latLong.lat}+${currentLocation.latLong.lng}`}
-      />
-    )}
+      : // show all breweries
+        breweries.map(
+          ({ latLong }) =>
+            latLong && (
+              <Marker
+                position={latLong}
+                key={`${latLong.lat}+${latLong.lng}`}
+              />
+            )
+        )}
   </Map>
 );
 

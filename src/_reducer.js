@@ -3,11 +3,13 @@ import {
   SET_LAT_LONG,
   SET_OPEN_BREWERIES,
   SET_CURRENT,
-  SET_DIRECTIONS
+  SET_DIRECTIONS,
+  SET_BEERS
 } from "./_actions";
 
 const initialState = {
   breweries: [],
+  beers: [],
   openBreweries: [],
   currentLocation: {},
   directions: null
@@ -19,6 +21,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         breweries: action.list
+      };
+    case SET_BEERS:
+      return {
+        ...state,
+        beers: action.list
       };
     case SET_OPEN_BREWERIES:
       return {

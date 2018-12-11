@@ -4,6 +4,7 @@ import { today } from "./utils/contants";
 const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 
 export const SET_BREWERIES = "SET_BREWERIES";
+export const SET_BEERS = "SET_BEERS";
 export const SET_LAT_LONG = "SET_LAT_LONG";
 export const SET_OPEN_BREWERIES = "SET_OPEN_BREWERIES";
 export const SET_CURRENT = "SET_CURRENT";
@@ -11,6 +12,10 @@ export const SET_DIRECTIONS = "SET_DIRECTIONS";
 
 const setBreweries = list => ({
   type: SET_BREWERIES,
+  list
+});
+const setBeers = list => ({
+  type: SET_BEERS,
   list
 });
 
@@ -32,13 +37,25 @@ const setDirections = directions => ({
 });
 
 // fetching breweries from given api
-export const fetchBreweries = () => (dispatch, getState) => {
+export const fetchBreweries = () => dispatch => {
   // using a heroku proxyurl to work around client cors issues
   const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
   const url = `https://download.oberon.nl/opdracht/brouwerijen.js`;
   fetch(proxyUrl + url)
     .then(resp => resp.json())
     .then(json => dispatch(setBreweries(json.breweries)))
+    .catch(error => {
+      console.log(error);
+    });
+};
+// fetching beers from given api
+export const fetchBeers = () => dispatch => {
+  // using a heroku proxyurl to work around client cors issues
+  const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
+  const url = `https://download.oberon.nl/opdracht/bieren.js`;
+  fetch(proxyUrl + url)
+    .then(resp => resp.json())
+    .then(json => dispatch(setBeers(json.beers)))
     .catch(error => {
       console.log(error);
     });
@@ -97,7 +114,8 @@ export const getDistances = (postalCode, google) => (dispatch, getState) => {
   service.getDistanceMatrix(serviceOptions, (response, status) => {
     if (
       status === google.maps.DistanceMatrixStatus.OK &&
-      response.rows[0].elements[0].status !== "ZERO_RESULTS"
+      response.rows[0].elements[0].status !== "ZERO_RESULTS" &&
+      response.rows[0].elements[0].status !== "NOT_FOUND"
     ) {
       const { elements } = response.rows[0];
       elements.forEach((el, index) => {
@@ -113,6 +131,7 @@ export const getDistances = (postalCode, google) => (dispatch, getState) => {
   });
 };
 
+// calculate route, next step
 export const calcRoute = (startPos, endPos, google) => (dispatch, getState) => {
   const directionsService = new google.maps.DirectionsService();
   const start = new google.maps.LatLng(
@@ -126,7 +145,7 @@ export const calcRoute = (startPos, endPos, google) => (dispatch, getState) => {
     travelMode: google.maps.TravelMode.DRIVING
   };
   directionsService.route(request, (response, status) => {
-    if (status == google.maps.DirectionsStatus.OK) {
+    if (status === google.maps.DirectionsStatus.OK) {
       // directionsDisplay.setDirections(response);
       // directionsDisplay.setMap(map);
       dispatch(setDirections(response));

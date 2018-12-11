@@ -5,10 +5,12 @@ import { GoogleApiWrapper } from "google-maps-react";
 
 import MapContainer from "./components/MapContainer";
 import Input from "./components/Input";
+import Beerslist from "./components/Beerslist";
 import "./App.css";
 
 import {
   fetchBreweries,
+  fetchBeers,
   getLatAndLongs,
   getDistances,
   calcRoute
@@ -17,8 +19,10 @@ import {
   getBreweries,
   getCurrentLocation,
   getOpenBreweries,
-  getDirections
+  getDirections,
+  getBeersFromNearestBrewery
 } from "./_selectors";
+import BreweryCard from "./components/BreweryCard";
 
 const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -46,6 +50,7 @@ class App extends Component {
 
   getBrewery() {
     this.props.dispatch(fetchBreweries());
+    this.props.dispatch(fetchBeers());
   }
 
   doOnSeach = (postalCode, google) => {
@@ -57,33 +62,28 @@ class App extends Component {
       breweries,
       currentLocation,
       openBreweries,
-      directions
+      directions,
+      beers
     } = this.props;
-    const nearest = openBreweries[0];
     return (
       <div className="App">
-        <section>
+        <section className="inputSection">
           <Input doOnSeach={this.doOnSeach} openBreweries={openBreweries} />
         </section>
         {openBreweries.length ? (
-          <section>
-            <p>{`The nearest brewery open today is ${nearest.name}.`}</p>
-            <p>{`It's open:`}</p>
-            <ul>
-              {nearest.open.map(el => (
-                <li key={el}>{el}</li>
-              ))}
-            </ul>
-            <p>{`Address: ${nearest.address}, ${nearest.city}, ${
-              nearest.zipcode
-            }`}</p>
+          <section className="brewerySection">
+            <BreweryCard brewery={openBreweries[0]} />
           </section>
         ) : null}
-        <section>
+        <section className="beerlistSection">
+          <Beerslist beers={beers} />
+        </section>
+        <section className="mapSection">
           <MapContainer
             breweries={breweries}
             currentLocation={currentLocation}
             directions={directions}
+            closestBrewery={openBreweries[0]}
           />
         </section>
       </div>
@@ -104,7 +104,8 @@ const mapStateToProps = state => {
     breweries: getBreweries(state),
     currentLocation: getCurrentLocation(state),
     openBreweries: getOpenBreweries(state),
-    directions: getDirections(state)
+    directions: getDirections(state),
+    beers: getBeersFromNearestBrewery(state)
   };
 };
 const mapDispatchToProps = dispatch => {

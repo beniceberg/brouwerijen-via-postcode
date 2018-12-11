@@ -14,23 +14,36 @@ class Input extends Component {
   doSeachClick = () => {
     this.props.doOnSeach(this.state.postalCode, this.props.google);
   };
+  doKeyPress = e =>
+    e.key === "Enter" &&
+    (this.state.postalCode.match(regexNL) ||
+      this.state.postalCode.match(regexBE)) &&
+    this.doSeachClick();
 
   render() {
     const { postalCode } = this.state;
     const disableButton =
       !postalCode.match(regexNL) && !postalCode.match(regexBE);
     return (
-      <div className="inputContainer">
-        <h1>The Brewery Search Engine</h1>
-        <input
-          type="text"
-          placeholder="Type your location's zip"
-          value={postalCode}
-          onChange={this.handleChange}
-        />
-        <button onClick={this.doSeachClick} disabled={disableButton}>
-          Search Breweries
-        </button>
+      <div>
+        <h1 className="title">The Brewery Search Engine</h1>
+        <div className="inputContainer">
+          <input
+            className="searchInput"
+            type="text"
+            placeholder="Type your zipcode"
+            value={postalCode}
+            onChange={this.handleChange}
+            onKeyPress={this.doKeyPress}
+          />
+          <button
+            className={`searchButton ${disableButton ? `disabled` : ""}`}
+            onClick={this.doSeachClick}
+            disabled={disableButton}
+          >
+            Search Breweries
+          </button>
+        </div>
       </div>
     );
   }

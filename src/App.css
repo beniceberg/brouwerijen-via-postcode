@@ -1,3 +1,105 @@
 .App {
   text-align: center;
 }
+
+/* Input section */
+
+.inputSection {
+}
+
+.title {
+  margin: 40px 0;
+}
+.inputContainer {
+  height: 100px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+.searchInput {
+  height: 36px;
+  width: 200px;
+  border-radius: 4px;
+  padding-left: 14px;
+  font-size: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+}
+.searchButton {
+  height: 40px;
+  width: 160px;
+  border-radius: 4px;
+  background-color: #2185d0;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.searchButton:hover {
+  opacity: 0.8;
+}
+.searchButton.disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Brewery section */
+
+.brewerySection {
+  display: flex;
+  justify-content: center;
+}
+
+.breweryCard {
+  width: 400px;
+  text-align: start;
+}
+.breweryName {
+  font-weight: 700;
+  margin-left: 4px;
+}
+.today {
+  font-weight: 600;
+}
+
+/* Beer list section */
+
+.beerlistSection {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.beersList {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin: 30px 0;
+}
+.beerCard {
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 20px 30px;
+  width: 120px;
+  height: 200px;
+  transition: all 0.3s ease;
+}
+.beerCard:hover {
+  margin-top: -10px;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+}
+.boldKey {
+  font-weight: 600;
+}
+
+/* Map section */
+
+.mapSection {
+}
+.mapContainer {
+  height: 50vh !important;
+}
