@@ -87,18 +87,23 @@ export const getLatAndLongs = () => (dispatch, getState) => {
 };
 
 export const getLatLongInput = postalCode => (dispatch, getState) => {
-  const currentLocation = fetchBreweryLatLong(postalCode);
+  const currentLocation = fetchBreweryLatLong(postalCode.split(" ").join("+"));
   currentLocation.then(location =>
     dispatch(setCurrent({ zipcode: postalCode, latLong: location }))
   );
 };
 
-export const getDistances = (postalCode, google) => (dispatch, getState) => {
+export const getDistances = (postalCode, google, isNL) => (
+  dispatch,
+  getState
+) => {
   // credits: https://stackoverflow.com/a/32261167/9094722
   const breweries = getBreweries(getState());
   const service = new google.maps.DistanceMatrixService();
+  // makes it more specific
+  const origins = `${postalCode}, ${isNL ? `Netherlands` : `Belgium`}`;
   const serviceOptions = {
-    origins: [postalCode],
+    origins: [origins],
     destinations: [],
     travelMode: google.maps.TravelMode.DRIVING
   };
@@ -124,7 +129,7 @@ export const getDistances = (postalCode, google) => (dispatch, getState) => {
         }
       });
       dispatch(setOpenBreweries(distanceArray));
-      dispatch(getLatLongInput(postalCode));
+      dispatch(getLatLongInput(origins));
     } else {
       alert("Invalid zip code");
     }

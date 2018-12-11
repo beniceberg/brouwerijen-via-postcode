@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import { today } from "../utils/contants";
 
@@ -19,5 +20,9 @@ const BreweryCard = ({ brewery }) => (
     <p>{`Address: ${brewery.address}, ${brewery.city}, ${brewery.zipcode}`}</p>
   </div>
 );
+
+BreweryCard.propTypes = {
+  brewery: PropTypes.object
+};
 
 export default BreweryCard;

@@ -53,8 +53,8 @@ class App extends Component {
     this.props.dispatch(fetchBeers());
   }
 
-  doOnSeach = (postalCode, google) => {
-    this.props.dispatch(getDistances(postalCode, google));
+  doOnSeach = (postalCode, google, isNL) => {
+    this.props.dispatch(getDistances(postalCode, google, isNL));
   };
 
   render() {
@@ -68,7 +68,7 @@ class App extends Component {
     return (
       <div className="App">
         <section className="inputSection">
-          <Input doOnSeach={this.doOnSeach} openBreweries={openBreweries} />
+          <Input doOnSeach={this.doOnSeach} />
         </section>
         {openBreweries.length ? (
           <section className="brewerySection">
@@ -96,7 +96,8 @@ App.propTypes = {
   dispatch: PropTypes.func,
   currentLocation: PropTypes.object,
   openBreweries: PropTypes.array,
-  directions: PropTypes.object
+  directions: PropTypes.object,
+  beers: PropTypes.array
 };
 
 const mapStateToProps = state => {

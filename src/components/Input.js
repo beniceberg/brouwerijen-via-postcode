@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { GoogleApiWrapper } from "google-maps-react";
+import PropTypes from "prop-types";
 
 import { regexBE, regexNL } from "../utils/contants";
 
@@ -8,12 +9,13 @@ const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 class Input extends Component {
   state = { postalCode: "" };
 
-  handleChange = event => {
-    this.setState({ postalCode: event.target.value });
-  };
-  doSeachClick = () => {
-    this.props.doOnSeach(this.state.postalCode, this.props.google);
-  };
+  handleChange = event => this.setState({ postalCode: event.target.value });
+  doSeachClick = () =>
+    this.props.doOnSeach(
+      this.state.postalCode,
+      this.props.google,
+      this.state.postalCode.match(regexNL)
+    );
   doKeyPress = e =>
     e.key === "Enter" &&
     (this.state.postalCode.match(regexNL) ||
@@ -48,5 +50,10 @@ class Input extends Component {
     );
   }
 }
+
+Input.propTypes = {
+  google: PropTypes.func,
+  doOnSeach: PropTypes.func
+};
 
 export default GoogleApiWrapper({ apiKey: googleMapsKey })(Input);
